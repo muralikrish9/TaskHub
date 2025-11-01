@@ -15,11 +15,61 @@ const SCOPES = [
 console.log('[Google Auth] Using redirect URI:', REDIRECT_URI);
 
 /**
+ * Load cached token from Chrome storage
+ */
+async function loadCachedToken() {
+  try {
+    const result = await chrome.storage.local.get(['googleAuthToken']);
+    if (result.googleAuthToken) {
+      cachedToken = result.googleAuthToken;
+      console.log('[Google Auth] Loaded token from storage');
+      return true;
+    }
+  } catch (error) {
+    console.log('[Google Auth] No cached token in storage');
+  }
+  return false;
+}
+
+/**
+ * Save token to Chrome storage
+ */
+async function saveToken(token) {
+  try {
+    await chrome.storage.local.set({ googleAuthToken: token });
+    cachedToken = token;
+    console.log('[Google Auth] Saved token to storage');
+  } catch (error) {
+    console.error('[Google Auth] Failed to save token:', error);
+    cachedToken = token; // Still cache in memory as fallback
+  }
+}
+
+/**
+ * Clear token from Chrome storage
+ */
+async function clearSavedToken() {
+  try {
+    await chrome.storage.local.remove(['googleAuthToken']);
+    cachedToken = null;
+    console.log('[Google Auth] Cleared token from storage');
+  } catch (error) {
+    console.error('[Google Auth] Failed to clear saved token:', error);
+    cachedToken = null;
+  }
+}
+
+/**
  * Get OAuth token using Chrome Identity WebAuthFlow (for Web Application clients)
  * @param {boolean} interactive - Whether to show sign-in UI if needed
  * @returns {Promise<string>} OAuth token
  */
 export async function getAuthToken(interactive = true) {
+  // Load from storage first if not in memory
+  if (!cachedToken) {
+    await loadCachedToken();
+  }
+  
   // Check if we have a cached token first (if non-interactive)
   if (!interactive && cachedToken) {
     // Verify token is still valid by trying a simple API call
@@ -31,20 +81,20 @@ export async function getAuthToken(interactive = true) {
         return cachedToken;
       }
       // Token invalid, clear cache
-      cachedToken = null;
+      await clearSavedToken();
     } catch (error) {
-      cachedToken = null;
+      await clearSavedToken();
     }
   }
 
-  // Build OAuth URL
+  // Build OAuth URL - use prompt=select_account instead of consent to avoid re-prompting
   const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
     `client_id=${encodeURIComponent(CLIENT_ID)}&` +
     `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
     `response_type=token&` +
     `scope=${encodeURIComponent(SCOPES)}&` +
     `include_granted_scopes=true&` +
-    `prompt=consent`;
+    `prompt=select_account`;
 
   return new Promise((resolve, reject) => {
     chrome.identity.launchWebAuthFlow({
@@ -71,7 +121,8 @@ export async function getAuthToken(interactive = true) {
         
         if (token) {
           console.log('[Google Auth] ✓ Token obtained successfully');
-          cachedToken = token;
+          // Save to storage and memory
+          saveToken(token);
           resolve(token);
         } else {
           const error = params.get('error') || 'No token in response';
@@ -111,10 +162,12 @@ export async function getAuthHeaders(interactive = false) {
  * Remove cached token and revoke on Google servers
  */
 export async function revokeToken() {
-  if (cachedToken) {
-    const token = cachedToken;
-    cachedToken = null;
-    console.log('[Google Auth] Token removed from cache');
+  const token = cachedToken;
+  if (token) {
+    console.log('[Google Auth] Revoking token...');
+    
+    // Clear from storage first
+    await clearSavedToken();
 
     try {
       // Revoke on Google servers
@@ -228,7 +281,7 @@ export async function signOut() {
  */
 export async function clearInvalidToken(token) {
   if (token && cachedToken === token) {
-    cachedToken = null;
+    await clearSavedToken();
     console.log('[Google Auth] Cleared invalid token');
   }
 }
