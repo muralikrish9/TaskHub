@@ -1,8 +1,8 @@
-# GetShitDone - Chrome AI Extension
+# TaskHub - Chrome AI Extension
 
 ## Project Overview
 
-**GetShitDone** is a Chrome extension built for the Google Chrome Built-in AI Challenge 2025. The extension automates knowledge work tracking by converting highlighted text into structured tasks using Chrome's built-in AI APIs (Prompt, Summarizer, Writer). It generates daily work summaries with time tracking and project breakdowns, all processed locally for privacy.
+**TaskHub** is a Chrome extension built for the Google Chrome Built-in AI Challenge 2025. The extension automates knowledge work tracking by converting highlighted text into structured tasks using Chrome's built-in AI APIs (Prompt, Summarizer, Writer). It generates daily work summaries with time tracking and project breakdowns, all processed locally for privacy.
 
 **Hackathon**: Google Chrome Built-in AI Challenge 2025  
 **Deadline**: November 1, 2025  
