@@ -41,7 +41,7 @@ Use this guide when you want to hand TaskHub to a teammate or friend. It walks t
 
 ## 3. First Launch & Required Permissions
 1. Click the TaskHub icon to open the popup.
-2. Chrome may show a banner asking for permissions (storage, active tab, scripting); accept them so TaskHub can read highlights and create the floating “✨ Capture Task” button.
+2. Chrome may show a banner asking for permissions (storage, active tab, scripting); accept them so TaskHub can read highlights and create the floating "Capture Task" button.
 3. If you plan to use voice capture, open the **Audio** tab and allow microphone access the first time Chrome prompts you. (There’s also a “Microphone Permission Required” helper in the UI if you need to grant it later.)
 
 ### Checking Chrome AI Availability
@@ -52,9 +52,9 @@ Use this guide when you want to hand TaskHub to a teammate or friend. It walks t
 
 ## 4. Capturing Tasks from the Web
 
-### Highlight → “✨ Capture Task”
+### Highlight → Capture Task
 1. Highlight any actionable text on a webpage.
-2. A floating **✨ Capture Task** button appears near the selection.
+2. A floating **Capture Task** button appears near the selection.
 3. Click it to send the selection (plus surrounding context for Gmail threads) to the background AI worker.
 4. You’ll get a toast confirming the task was created; open the popup’s **Today** tab to review it.
 
@@ -141,14 +141,14 @@ Troubleshooting:
    - Load unpacked extension.
    - Open popup → allow highlight capture.
    - Go to Settings → connect Google (optional).
-   - Test by highlighting a line in Gmail or a doc to see the “✨ Capture Task” button.
+   - Test by highlighting a line in Gmail or a doc to see the "Capture Task" button.
 4. **Encourage Pinning:** Having the icon visible reinforces adoption and speeds up capture.
 5. **Share Best Practices:** Recommend capturing tasks directly from source material (emails, specs) and running the Summary before end-of-day stand-ups.
 
 ---
 
 ## 11. Troubleshooting & FAQ
-- **No “✨ Capture Task” button appears:** Refresh the page after loading the extension; ensure Chrome isn’t blocking extensions on that domain.
+- **No Capture Task button appears:** Refresh the page after loading the extension; ensure Chrome isn't blocking extensions on that domain.
 - **AI status shows unavailable:** Update Chrome, then reopen the popup. TaskHub retries initialization when you visit Settings → AI Features.
 - **Google sign-in fails or loops:** In Chrome’s extensions page, make sure the extension has permission to run in incognito/private if you test there. Otherwise, re-open the OAuth popup (user cancellation returns a silent error).
 - **Audio capture stops immediately:** Microphone access was denied. Re-run permission flow from the Audio tab or use `chrome://settings/content/microphone`.
